@@ -78,30 +78,52 @@ app.post("/send-notification", async (req, res) => {
         continue;
       }
 
-      console.log("notification received to be sent", notification)
+      console.log("notification received to be sent", notification);
+      //   const messagePayload = {
+      //     notification: {
+      //       title: notification.title,
+      //       body: notification.body,
+      //       imageUrl: notification.imageUrl || undefined,
+      //       icon: notification.icon || undefined,
+      //     // icon: "https://drive.google.com/uc?export=view&id=1XM_qby1d58shmAapjtep3G6pr872ULLE",
+      //     },
+      //     data: notification.data || {},
+      //     tokens,
+      //   };
+      //   console.log("message,payload,icon", messagePayload.notification.icon)
+      //   const response = await fcm.sendEachForMulticast(messagePayload);
+
+      // Revised Backend Payload Structure (Even for Android Only)
       const messagePayload = {
         notification: {
+          // Common notification block - good for title/body
           title: notification.title,
           body: notification.body,
           imageUrl: notification.imageUrl || undefined,
-        //   icon: notification.icon || undefined,
-        // icon: "https://drive.google.com/uc?export=view&id=1XM_qby1d58shmAapjtep3G6pr872ULLE",
         },
-        data: notification.data || {},
-        tokens,
+        data: notification.data || {}, // Data payload is fine here
+        tokens: tokens, // Array of tokens (assuming these are all Android tokens)
+
+        // *** ADD THE ANDROID-SPECIFIC BLOCK ***
+        android: {
+          notification: {
+            icon: notification.icon || undefined,
+          },
+        },
       };
-      console.log("message,payload,icon", messagePayload.notification.icon)
-    //     const messagePayload = {
-    //       data: {
-    //         title: notification.title,
-    //         body: notification.body,
-    //         ...(notification.imageUrl ? { imageUrl: notification.imageUrl } : {}),
-    //         ...notification.data,
-    //       },
-    //       tokens,
-    //     };
-    //   console.log("Sending message payload:", messagePayload);
+      console.log("messagePayload with android block for icon", messagePayload);
       const response = await fcm.sendEachForMulticast(messagePayload);
+
+      //     const messagePayload = {
+      //       data: {
+      //         title: notification.title,
+      //         body: notification.body,
+      //         ...(notification.imageUrl ? { imageUrl: notification.imageUrl } : {}),
+      //         ...notification.data,
+      //       },
+      //       tokens,
+      //     };
+      //   console.log("Sending message payload:", messagePayload);
 
       results.push({
         userId,
