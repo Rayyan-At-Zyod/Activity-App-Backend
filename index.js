@@ -78,17 +78,19 @@ app.post("/send-notification", async (req, res) => {
         continue;
       }
 
+      console.log("notification received to be sent", notification)
       const messagePayload = {
         notification: {
           title: notification.title,
           body: notification.body,
           imageUrl: notification.imageUrl || undefined,
-          icon: notification.icon || undefined,
-        // icon: "ic_notification",
+        //   icon: notification.icon || undefined,
+        // icon: "https://drive.google.com/uc?export=view&id=1XM_qby1d58shmAapjtep3G6pr872ULLE",
         },
         data: notification.data || {},
         tokens,
       };
+      console.log("message,payload,icon", messagePayload.notification.icon)
     //     const messagePayload = {
     //       data: {
     //         title: notification.title,
